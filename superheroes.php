@@ -63,10 +63,15 @@ $superheroes = [
   ], 
 ];
 
-?>
+$query = isset($_GET['query']) ? htmlspecialchars($_GET['query']) : '';
 
-<ul>
-<?php foreach ($superheroes as $superhero): ?>
-  <li><?= $superhero['alias']; ?></li>
-<?php endforeach; ?>
-</ul>
+if ($query) {
+    $filteredHeroes = array_filter($superheroes, function($hero) use ($query) {
+        return stripos($hero['name'], $query) !== false || stripos($hero['alias'], $query) !== false;
+    });
+
+    echo json_encode(array_values($filteredHeroes));
+} else {
+    echo json_encode($superheroes);
+}
+?>
